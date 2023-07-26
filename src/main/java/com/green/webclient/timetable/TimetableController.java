@@ -1,5 +1,6 @@
 package com.green.webclient.timetable;
 
+import com.green.webclient.timetable.model.TimetableContainerVo;
 import com.green.webclient.timetable.model.TimetableParam;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class TimetableController {
     private final TimetableService service;
 
     @GetMapping
-    public String getTimetable(TimetableParam p) {
+    public TimetableContainerVo getTimetable(TimetableParam p) {
         log.info("p : {}", p);
         return service.getTimetable(p);
     }

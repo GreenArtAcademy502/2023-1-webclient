@@ -1,9 +1,16 @@
 package com.green.webclient.timetable;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.green.webclient.timetable.model.TimetableContainerVo;
+import com.green.webclient.timetable.model.TimetableInfoVo;
 import com.green.webclient.timetable.model.TimetableParam;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,6 +21,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.TcpClient;
 
+import java.util.List;
+
+@Slf4j
 @Service
 public class TimetableService {
 
@@ -41,7 +51,7 @@ public class TimetableService {
                 .build();
     }
 
-    public String getTimetable(TimetableParam p) {
+    public TimetableContainerVo getTimetable(TimetableParam p) {
         String json = webClient.get().uri(uriBuilder -> uriBuilder.path("/hub/hisTimetable")
                                                         .queryParam("KEY", myApiKey)
                                                         .queryParam("Type", "json")
@@ -59,6 +69,17 @@ public class TimetableService {
                 ).retrieve().bodyToMono(String.class)
                 .block();
 
-        return json;
+        ObjectMapper om = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        JsonNode jsonNode = null;
+        List<TimetableInfoVo> infoList = null;
+        try {
+            jsonNode = om.readTree(json);
+            infoList = om.convertValue(jsonNode.at("/hisTimetable/1/row"), new TypeReference<List<TimetableInfoVo>>() {});
+            log.info("infoList: {}", infoList);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new TimetableContainerVo(p.getAllTiYmd(), p.getAy(), infoList);
     }
 }
