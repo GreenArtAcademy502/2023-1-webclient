@@ -21,7 +21,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.TcpClient;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -70,16 +72,20 @@ public class TimetableService {
                 .block();
 
         ObjectMapper om = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        JsonNode jsonNode = null;
         List<TimetableInfoVo> infoList = null;
+        TimetableContainerVo result = null;
         try {
-            jsonNode = om.readTree(json);
+            JsonNode jsonNode = om.readTree(json);
             infoList = om.convertValue(jsonNode.at("/hisTimetable/1/row"), new TypeReference<List<TimetableInfoVo>>() {});
+            Map<String, String> map = om.convertValue(jsonNode.at("/hisTimetable/1/row/0"), new TypeReference<HashMap<String, String>>() {});
             log.info("infoList: {}", infoList);
-        }catch (Exception e) {
+            String semeter = map.get("SEM");
+            String schoolNm = map.get("SCHUL_NM");
+            result = new TimetableContainerVo(p.getAllTiYmd(), p.getAy(), semeter, schoolNm, infoList);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return new TimetableContainerVo(p.getAllTiYmd(), p.getAy(), infoList);
+        return result;
     }
 }

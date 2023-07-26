@@ -1,27 +1,15 @@
 package com.green.webclient.timetable.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import lombok.ToString;
 
-@Data
 @ToString
 public class TimetableInfoVo {
-    private String schoolNm;
-    private String semester;
     private String dayAndNight;
     private String grade;
-    private int classNm;
-
-    @JsonProperty("SCHUL_NM")
-    public void setSchoolNm(String schoolNm) {
-        this.schoolNm = schoolNm;
-    }
-
-    @JsonProperty("SEM")
-    public void setSemester(String semester) {
-        this.semester = semester;
-    }
+    private String classNm;
+    private String perio;
+    private String subject;
 
     @JsonProperty("DGHT_CRSE_SC_NM")
     public void setDayAndNight(String dayAndNight) {
@@ -34,18 +22,8 @@ public class TimetableInfoVo {
     }
 
     @JsonProperty("CLASS_NM")
-    public void setClassNm(int classNm) {
+    public void setClassNm(String classNm) {
         this.classNm = classNm;
-    }
-
-    @JsonProperty("schoolNm")
-    public String getSchoolNm() {
-        return schoolNm;
-    }
-
-    @JsonProperty("semester")
-    public String getSemester() {
-        return semester;
     }
 
     @JsonProperty("dayAndNight")
@@ -59,7 +37,26 @@ public class TimetableInfoVo {
     }
 
     @JsonProperty("classNm")
-    public int getClassNm() {
+    public String getClassNm() {
         return classNm;
+    }
+    @JsonProperty("perio")
+    public String getPerio() {
+        return perio;
+    }
+
+    @JsonProperty("PERIO")
+    public void setPerio(String perio) {
+        this.perio = perio;
+    }
+
+    @JsonProperty("subject")
+    public String getSubject() {
+        return subject;
+    }
+
+    @JsonProperty("ITRT_CNTNT")
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }

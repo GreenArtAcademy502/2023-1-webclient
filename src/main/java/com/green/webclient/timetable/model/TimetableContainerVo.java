@@ -12,5 +12,7 @@ import java.util.List;
 public class TimetableContainerVo {
     private String date;
     private String year;
+    private String semester;
+    private String schoolNm;
     private List<TimetableInfoVo> infoList;
 }
